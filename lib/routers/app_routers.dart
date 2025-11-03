@@ -17,7 +17,7 @@ class AppRoutes {
       case login:
         return MaterialPageRoute(builder: (_) => Loginpage());
       case signup:
-        return MaterialPageRoute(builder: (_) => const SignUp());
+        return MaterialPageRoute(builder: (_) => SignUp());
       case forget_password:
         return MaterialPageRoute(builder: (_) => ForgetPassword());
       case menu_page:
