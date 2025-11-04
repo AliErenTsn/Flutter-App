@@ -1,13 +1,48 @@
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_login_page/routers/app_routers.dart';
 import '/components/TextField.dart';
+import 'package:flutter_login_page/services/firebase_users.dart';
 
-class Loginpage extends StatelessWidget {
-  Loginpage({super.key});
+class Loginpage extends StatefulWidget {
+  const Loginpage({super.key});
 
+  @override
+  State<Loginpage> createState() => _LoginpageState();
+}
+
+  class _LoginpageState extends State<Loginpage> {
   // text editing controller
   final usernameController = TextEditingController();
   final passwordController = TextEditingController();
+  final FirestoreService firestoreService = FirestoreService();
+
+  void loginUser() async {
+    
+    String username = usernameController.text.trim();
+    String password = passwordController.text.trim();
+
+    if(username.isEmpty || password.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Tüm alanları doldurun!!')),
+      );
+      return;
+    }
+
+    bool userExist = await firestoreService.checkUser(username, password);
+
+    if(userExist) {
+      ScaffoldMessenger.of(context).showSnackBar(
+         SnackBar(content: Text('Hoşgeldin, $username'))
+      ); 
+      Navigator.pushReplacementNamed(context, AppRoutes.menu_page , arguments: username); 
+      
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text("Kullanıcı adı veya şifre hatalı!")),
+      );
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -89,7 +124,7 @@ class Loginpage extends StatelessWidget {
               //Button
               ElevatedButton(
                 onPressed: () {
-                  Navigator.pushNamed(context, AppRoutes.menu_page);
+                  loginUser();
                 }, 
                 style: ElevatedButton.styleFrom(
                   backgroundColor: Colors.blue,
