@@ -1,13 +1,56 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_login_page/services/firebase_users.dart';
 import '../routers/app_routers.dart';
-import '/components/TextField.dart';
+import '/components/TextField.dart';    // GITHUB A USER DATABASE EKLEDNİ COMMIT AT
 
-class SignUp extends StatelessWidget{
-  SignUp({super.key});
+class SignUp extends StatefulWidget {
+  const SignUp({super.key});
 
+  @override
+  State<SignUp> createState() => _RegisterPageState();
+}
+
+class _RegisterPageState extends State<SignUp> {
   final usernameController = TextEditingController();
   final passwordController = TextEditingController();
   final confirmPasswordController = TextEditingController();
+
+  final FirestoreService firestoreService = FirestoreService();
+
+  void registerUser() async {
+    String username = usernameController.text.trim();
+    String password = passwordController.text.trim();
+    String confirmPassword = confirmPasswordController.text.trim();
+
+    // Alanlar boş mu kontrol et
+    if (username.isEmpty || password.isEmpty || confirmPassword.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text("Lütfen tüm alanları doldurun!")),
+      );
+      return;
+    }
+
+    // Şifre kontrolü
+    if (password != confirmPassword) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text("Şifreler eşleşmiyor!")),
+      );
+      return;
+    }
+
+    // Firestore’a kaydet 
+    await firestoreService.addUser(username, password);
+
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(content: Text("Kayıt başarılı!")),
+    );
+
+     Navigator.pushNamed(context, AppRoutes.login);
+    // Alanları temizle
+    usernameController.clear();
+    passwordController.clear();
+    confirmPasswordController.clear();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -84,7 +127,7 @@ class SignUp extends StatelessWidget{
               //Button
               ElevatedButton(
                 onPressed: () {
-                  Navigator.pushNamed(context, AppRoutes.menu_page);
+                  registerUser();
                 }, 
                 style: ElevatedButton.styleFrom(
                   backgroundColor: Colors.blue,
