@@ -19,7 +19,7 @@ class FirestoreService {
       .where('password', isEqualTo: password)
       .get();
 
-  return querySnapshot.docs.isNotEmpty; 
-}
+    return querySnapshot.docs.isNotEmpty; 
+  }
 
 }
