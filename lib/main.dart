@@ -2,6 +2,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_login_page/firebase_options.dart';
 import 'pages/login_page.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 import 'routers/app_routers.dart';
 
 void main() async {

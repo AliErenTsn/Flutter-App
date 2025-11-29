@@ -1,4 +1,6 @@
+import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_login_page/services/firestore.dart';
 
@@ -11,8 +13,8 @@ class EducationPage extends StatefulWidget {
   // FİREBASE BAĞLAMADA KALDIN VİDEO DK : 9.00
   class _EducationState extends State<EducationPage> {
 
-    final FirestoreService firestoreService = FirestoreService();
-
+    final FirestoreService firestoreNotes = FirestoreService();
+    bool _isExpanded = false;
     final TextEditingController textController = TextEditingController();
 
     void openNoteBox() {
@@ -25,14 +27,15 @@ class EducationPage extends StatefulWidget {
           ),
           actions: [
             ElevatedButton(
-              onPressed: () {
-                firestoreService.addNote(textController.text);
+              onPressed: () async {
+               await firestoreNotes.addNote(textController.text);
 
                 textController.clear();
 
                 Navigator.pop(context);
               }, 
-              child: Text('Add'))
+              child: Text('Add')
+              ),
           ],
         ),
       );
@@ -48,7 +51,7 @@ class EducationPage extends StatefulWidget {
             child: const Icon(Icons.add),  
           ),
           body: StreamBuilder<QuerySnapshot>(
-            stream: firestoreService.getNotes(),
+            stream: firestoreNotes.getNotes(),
             builder: (context , snapshot) {
               if(snapshot.hasData) {
                 List notesList = snapshot.data!.docs;
@@ -64,8 +67,34 @@ class EducationPage extends StatefulWidget {
                       document.data() as Map<String , dynamic>;
                     String noteText = data['note'];
 
-                    return ListTile(
-                      title: Text(noteText),
+                    return Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                      child:GestureDetector(
+                          onTap: () => setState(() => _isExpanded = !_isExpanded),
+                          child: AnimatedContainer(
+                          duration: const Duration(milliseconds: 250),
+                          curve: Curves.easeInOut,
+                          height: _isExpanded ? 150 : 50,
+                          child: Card(
+                            elevation: 4, // gölge
+                            color: Colors.blue[100],
+                            shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(12),
+                            ),
+                            child: ListTile(
+                              leading: const Icon(Icons.note_alt, color: Colors.blue),
+                              title: Text(
+                                noteText,
+                                style: const TextStyle(
+                                  fontSize: 18,
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.black87,
+                                ),
+                              ),
+                            ),
+                          ),
+                        )
+                      )
                     );
                   }
                 ); 
