@@ -1,6 +1,4 @@
-import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_login_page/services/firestore.dart';
 
@@ -31,7 +29,6 @@ class EducationPage extends StatefulWidget {
                await firestoreNotes.addNote(textController.text);
 
                 textController.clear();
-
                 Navigator.pop(context);
               }, 
               child: Text('Add')
@@ -61,7 +58,6 @@ class EducationPage extends StatefulWidget {
                   itemCount: notesList.length,
                   itemBuilder: (context , index) {
                     DocumentSnapshot document = notesList[index];
-                    String docID = document.id;
 
                     Map<String , dynamic> data =
                       document.data() as Map<String , dynamic>;
