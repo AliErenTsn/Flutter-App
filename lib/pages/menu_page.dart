@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_login_page/routers/app_routers.dart';
 import '/components/MenuButton.dart';
 
+
 class MenuPage extends StatelessWidget {
   const MenuPage({super.key});
 
@@ -13,7 +14,7 @@ class MenuPage extends StatelessWidget {
         title: const Text("IAU"),
         backgroundColor: Colors.blue[300],
         centerTitle: true,
-        automaticallyImplyLeading: false,
+        automaticallyImplyLeading: true,
         actions:[ 
           IconButton(
             icon: const Icon(Icons.exit_to_app_rounded),
@@ -25,16 +26,59 @@ class MenuPage extends StatelessWidget {
           ),
         ]
       ),
+
       drawer: Drawer(
-        child:ListView(
+        child: ListView(
+          padding: EdgeInsets.zero, // Üstteki boşluğu sıfırlar
           children: [
-            const DrawerHeader(
-              decoration: BoxDecoration(color: Colors.blue),
-              child: Text('Drawer Header'),
+            // İnceltilmiş Mavi Header
+            SizedBox(
+              height: 100, // Yüksekliği buradan kontrol edebilirsin
+              child: DrawerHeader(
+                decoration: BoxDecoration(
+                  color: Colors.blue[300],
+                ),
+                margin: EdgeInsets.zero,
+                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+                child: const Align(
+                  alignment: Alignment.bottomLeft,
+                  child: Text(
+                    "MENÜ",
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 22, // Büyük başlık
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ),
+              ),
             ),
+
+            // Profil Seçeneği
             ListTile(
-              title: Text("Profile"),
-            )
+              leading: const Icon(Icons.person, color: Colors.blue, size: 28),
+              title: const Text(
+                "Profil",
+                style: TextStyle(fontSize: 18, fontWeight: FontWeight.w500),
+              ),
+              onTap: () {
+                Navigator.pushNamed(context, AppRoutes.profile_page);
+              },
+            ),
+
+            const Divider(), // Araya ince bir çizgi
+
+            // Çıkış Yap Seçeneği
+            ListTile(
+              leading: const Icon(Icons.exit_to_app, color: Colors.redAccent, size: 28),
+              title: const Text(
+                "Çıkış Yap",
+                style: TextStyle(fontSize: 18, fontWeight: FontWeight.w500),
+              ),
+              onTap: () {
+                Navigator.pushNamed(context, AppRoutes.login);
+              },
+            ),
           ],
         ),
       ),
